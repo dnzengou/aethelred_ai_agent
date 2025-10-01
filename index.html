@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Global Geopolitics Flashcard Game</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f8fa; margin: 0; padding: 25px; }
+    #flashcard {
+      background: #fff;
+      width: 90%;
+      max-width: 700px;
+      margin: 40px auto;
+      border-radius: 8px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+      padding: 2em;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #question { font-size: 1.2em; margin-bottom: 2em; }
+    #answer { display: none; color: #222e; margin-bottom: 1em; }
+    #showBtn, #nextBtn { margin: 0.5em 0.25em; padding: 0.5em 2em; font-size: 1em; border: none; border-radius: 5px; background: #1877f2; color: #fff; cursor: pointer; }
+    #nextBtn { background: #44b861; }
+    #showBtn:hover, #nextBtn:hover { opacity: 0.90; }
+    #score { margin: 20px 0; font-size: 1em; }
+    #footer { text-align: center; margin-top: 2em; color: #aaa; }
+  </style>
+</head>
+<body>
+  <h1>Global Geopolitics through an Ancestral Strategy Lens <span style="font-size:0.6em;">(Flashcards)</span></h1>
+  <div id="flashcard">
+    <div id="question">Loading...</div>
+    <div id="answer"></div>
+    <button id="showBtn">Show Answer</button>
+    <button id="nextBtn" style="display:none;">Next</button>
+    <div id="score"></div>
+  </div>
+  <div id="footer">
+    &copy; 2025 Global Geopolitics Flashcards by Prompt.
+  </div>
+  <script>
+    const flashcards = [
+      {
+        question: "What core principle does Sun Tzu emphasize in The Art of War relevant to modern conflict?",
+        answer: "Intelligence, deception, strategic flexibility, and winning without direct battle."
+      },
+      {
+        question: "How does 'Unrestricted Warfare' redefine the boundaries of conflict?",
+        answer: "By introducing economic, technological, legal, and psychological tools as weapons, blending war and peace."
+      },
+      {
+        question: "What is Machiavelli’s concept of 'virtù' and 'fortuna'?",
+        answer: "Virtù is adaptability and decisive action; fortuna is chance or luck—leaders must exploit both to maintain power."
+      },
+      {
+        question: "Which strategic principles best explain the Russia-Ukraine conflict?",
+        answer: "Hybrid warfare via cyber, information, and energy; adaptable strategies per Sun Tzu & Unrestricted Warfare, with Machiavellian power maintenance."
+      },
+      {
+        question: "What defines China’s approach to Taiwan per the ancestral lens?",
+        answer: "Multidomain influence (economic, psychological, technological) and shaping the environment before outright conflict; focus on reputation and strategic patience."
+      },
+      {
+        question: "How are trade wars and supply chain weaponization strategically framed?",
+        answer: "They apply Machiavelli’s control of resources, Sun Tzu’s logistics, and Unrestricted Warfare’s economic weaponization."
+      },
+      {
+        question: "What marks the rise of techno-feudalism and tech sovereignty as strategic challenges?",
+        answer: "The emergence of new power loci among Big Tech, critical control of digital terrain, and regulatory battles as territory and allegiance struggles."
+      },
+      {
+        question: "What makes social media a modern strategic weapon?",
+        answer: "Its use for psychological manipulation, narrative control, and asymmetric information warfare, echoing Sun Tzu’s emphasis on deception."
+      },
+      {
+        question: "Name two emergent global trends susceptible to the ancestral strategy lens.",
+        answer: "1) African resource wars over rare earths and lithium; 2) AI as a new geopolitical terrain and competitive arms race."
+      },
+      {
+        question: "What key warning does Orwell’s 1984 provide when applied to social media weaponization?",
+        answer: "The risk of 'doublethink' and 'Newspeak'—manipulation of truth and perpetual psychological warfare for control."
+      },
+      {
+        question: "What are the new priorities for defense spending according to this analysis?",
+        answer: "Investing in hybrid and unrestricted domains: cyber, information operations, resilience, and cross-domain rapid adaptation."
+      },
+      {
+        question: "What vulnerabilities are highlighted for the EU space technology ecosystem?",
+        answer: "Dependency on rare earths, supply chain insecurity, and digital infrastructure exposure to sabotage and coercion."
+      },
+      {
+        question: "Why are nuclear and rare earth value chains politically manipulable?",
+        answer: "Monopoly control lets states use them as coercive levers; supply disruption is a tool of policy, not just economics."
+      },
+      {
+        question: "What caveat must be considered when forecasting based on historical strategy?",
+        answer: "Correlation is not causation; predictions are hypothetical, grounded in patterns—not deterministic certainties."
+      }
+    ];
+
+    let current = 0, right = 0, wrong = 0;
+
+    function showFlashcard(idx) {
+      document.getElementById('question').textContent = flashcards[idx].question;
+      document.getElementById('answer').textContent = flashcards[idx].answer;
+      document.getElementById('answer').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('showBtn').style.display = 'inline';
+      document.getElementById('score').textContent = `Card ${idx + 1} of ${flashcards.length}`;
+    }
+
+    document.getElementById('showBtn').onclick = function () {
+      document.getElementById('answer').style.display = 'block';
+      document.getElementById('showBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline';
+    };
+
+    document.getElementById('nextBtn').onclick = function () {
+      current = (current + 1) % flashcards.length;
+      showFlashcard(current);
+    };
+
+    // Initial display
+    showFlashcard(current);
+  </script>
+</body>
+</html>
