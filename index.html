@@ -2,126 +2,421 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Global Geopolitics Flashcard Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aethelred’s Compass: Ancient Strategy Meets Modern Geopolitics</title>
+  <meta name="description" content="Interactive flashcard game blending Sun Tzu, Machiavelli, and modern geopolitics. Learn proactive strategy and ethical decision-making in an engaging way.">
   <style>
-    body { font-family: Arial, sans-serif; background: #f7f8fa; margin: 0; padding: 25px; }
-    #flashcard {
-      background: #fff;
-      width: 90%;
-      max-width: 700px;
-      margin: 40px auto;
-      border-radius: 8px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.2);
-      padding: 2em;
-      min-height: 150px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    :root {
+      --primary: #8B4513;     /* Noble brown */
+      --accent: #DAA520;      /* Golden amber */
+      --bg: #FAF9F6;          /* Parchment */
+      --card-bg: #FFFFFF;
+      --text: #2C1810;
+      --shadow: rgba(139, 69, 19, 0.15);
     }
-    #question { font-size: 1.2em; margin-bottom: 2em; }
-    #answer { display: none; color: #222e; margin-bottom: 1em; }
-    #showBtn, #nextBtn { margin: 0.5em 0.25em; padding: 0.5em 2em; font-size: 1em; border: none; border-radius: 5px; background: #1877f2; color: #fff; cursor: pointer; }
-    #nextBtn { background: #44b861; }
-    #showBtn:hover, #nextBtn:hover { opacity: 0.90; }
-    #score { margin: 20px 0; font-size: 1em; }
-    #footer { text-align: center; margin-top: 2em; color: #aaa; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .book-cover {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 1rem;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .book-cover:hover { transform: scale(1.02); }
+
+    h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin: 0.5rem 0;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #6B4423;
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: #8B5A2B;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    #game-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    #flashcard {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 12px 35px var(--shadow);
+      padding: 2.5rem;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    #flashcard::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(218,165,32,0.03) 0%, transparent 50%);
+      pointer-events: none;
+      border-radius: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      color: #8B5A2B;
+    }
+
+    .card-number { font-weight: bold; }
+
+    #question {
+      font-size: 1.35rem;
+      margin-bottom: 1.8rem;
+      color: var(--primary);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    #answer {
+      display: none;
+      font-size: 1.15rem;
+      color: #3E2723;
+      background: #FFF8E7;
+      padding: 1.2rem;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      margin: 1.2rem 0;
+      line-height: 1.6;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    button {
+      padding: 0.75rem 1.8rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+
+    #showBtn {
+      background: var(--primary);
+      color: white;
+    }
+
+    #showBtn:hover { background: #6D3510; transform: translateY(-2px); }
+
+    #nextBtn {
+      background: var(--accent);
+      color: #3E2723;
+      display: none;
+    }
+
+    #nextBtn:hover { background: #C6951A; transform: translateY(-2px); }
+
+    #progress {
+      margin: 1.5rem 0;
+      height: 8px;
+      background: #E8E0D5;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+      transition: width 0.5s ease;
+      border-radius: 4px;
+    }
+
+    #stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      color: #6B4423;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-value { font-weight: bold; font-size: 1.3rem; color: var(--primary); }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #8B6F47;
+      font-size: 0.9rem;
+    }
+
+    .cta {
+      text-align: center;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #FFF8E7;
+      border-radius: 12px;
+      border: 2px dashed var(--accent);
+    }
+
+    .cta h3 { color: var(--primary); margin-bottom: 0.5rem; }
+
+    @media (max-width: 600px) {
+      #flashcard { padding: 1.5rem; }
+      h1 { font-size: 1.8rem; }
+      #question { font-size: 1.2rem; }
+      .action-buttons { flex-direction: column; }
+      button { width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <h1>Global Geopolitics through an Ancestral Strategy Lens <span style="font-size:0.6em;">(Flashcards)</span></h1>
-  <div id="flashcard">
-    <div id="question">Loading...</div>
-    <div id="answer"></div>
-    <button id="showBtn">Show Answer</button>
-    <button id="nextBtn" style="display:none;">Next</button>
-    <div id="score"></div>
+
+  <header>
+    <img src="https://miro.medium.com/v2/da:true/resize:fit:1200/0*ZuBkOqzpLXhbhDvg" alt="Sun Tzu The Art of War & Niccolò Machiavelli The Prince - Classic Collection" class="book-cover" style="width: 80%;">
+    <h1>Aethelred’s Compass</h1>
+    <p class="subtitle">Ancient Strategy Meets Modern Geopolitics</p>
+    <p class="tagline">An interactive flashcard journey through Sun Tzu, Machiavelli, and today’s global challenges — designed for curious minds, leaders, and innovators.</p>
+      <p><a href="https://open.substack.com/pub/yavro/p/aethelreds-chronicle-from-prompt" target="_blank" style="color: var(--primary); font-weight: bold;">Read the article →</a></p>
+  </header>
+
+  <div id="game-container">
+    <div id="flashcard">
+      <div class="card-header">
+        <span class="card-number">Card <span id="card-num">1</span> / <span id="total-cards">0</span></span>
+        <span id="category">Loading...</span>
+      </div>
+      <div id="question">Loading card...</div>
+      <div id="answer"></div>
+      <div class="action-buttons">
+        <button id="showBtn">Reveal Insight</button>
+        <button id="nextBtn">Next Card →</button>
+      </div>
+    </div>
+
+    <div id="progress"><div id="progress-bar"></div></div>
+
+    <div id="stats">
+      <div class="stat-item">
+        <div class="stat-value" id="current-streak">0</div>
+        <div>Current Streak</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="total-seen">0</div>
+        <div>Cards Explored</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="mastery">0%</div>
+        <div>Mastery</div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <h3>Ready to Apply This in Real Life?</h3>
+      <p>Run your own scenario with the <strong>Aethelred AI Agent</strong> — free, open-source, and one click away.</p>
+      <p><a href="https://github.com/DesireYavro/aethelred_ai_agent/aethelred_agent.ipynb" target="_blank" style="color: var(--primary); font-weight: bold;">Download the Chatbot →</a></p>
+    </div>
   </div>
-  <div id="footer">
-    &copy; 2025 Global Geopolitics Flashcards by Prompt.
-  </div>
+
+  <footer>
+    <p>© 2025 Aethelred’s Compass | Inspired by Sun Tzu, Machiavelli, and the art of wise counsel.</p>
+    <p><em>“The supreme art of war is to subdue the enemy without fighting.”</em> — Sun Tzu</p>
+  </footer>
+
   <script>
     const flashcards = [
+      // === SUN TZU CORE PRINCIPLES ===
       {
-        question: "What core principle does Sun Tzu emphasize in The Art of War relevant to modern conflict?",
-        answer: "Intelligence, deception, strategic flexibility, and winning without direct battle."
+        question: "What does Sun Tzu mean by 'All warfare is based on deception'?",
+        answer: "Success comes not from brute force, but from misleading the opponent about your strength, timing, and intentions. In business or diplomacy, this means shaping perceptions before acting.",
+        category: "Sun Tzu – Deception"
       },
       {
-        question: "How does 'Unrestricted Warfare' redefine the boundaries of conflict?",
-        answer: "By introducing economic, technological, legal, and psychological tools as weapons, blending war and peace."
+        question: "Why does Sun Tzu say 'Know the enemy and know yourself'?",
+        answer: "Self-awareness of your capabilities + accurate intelligence about your opponent = victory in 100 battles. Skip either, and even one win may cost you dearly.",
+        category: "Sun Tzu – Intelligence"
       },
       {
-        question: "What is Machiavelli’s concept of 'virtù' and 'fortuna'?",
-        answer: "Virtù is adaptability and decisive action; fortuna is chance or luck—leaders must exploit both to maintain power."
+        question: "What is the highest form of generalship according to Sun Tzu?",
+        answer: "To win without fighting — by diplomacy, deterrence, or breaking the enemy’s will through superior positioning and preparation.",
+        category: "Sun Tzu – Victory"
+      },
+
+      // === MACHIAVELLI & POWER ===
+      {
+        question: "What is the difference between 'virtù' and 'fortuna' in Machiavelli’s view?",
+        answer: "<strong>Virtù</strong> = skill, decisiveness, adaptability.<br><strong>Fortuna</strong> = luck, timing, external events.<br>A great leader masters both — but never relies solely on luck.",
+        category: "Machiavelli – Leadership"
       },
       {
-        question: "Which strategic principles best explain the Russia-Ukraine conflict?",
-        answer: "Hybrid warfare via cyber, information, and energy; adaptable strategies per Sun Tzu & Unrestricted Warfare, with Machiavellian power maintenance."
+        question: "Is it better to be loved or feared, according to Machiavelli?",
+        answer: "Feared — but not hated. Love is fickle and can be withdrawn. Fear, if based on respect and consistency, ensures obedience. The key: avoid cruelty for its own sake.",
+        category: "Machiavelli – Influence"
       },
       {
-        question: "What defines China’s approach to Taiwan per the ancestral lens?",
-        answer: "Multidomain influence (economic, psychological, technological) and shaping the environment before outright conflict; focus on reputation and strategic patience."
+        question: "Why does Machiavelli advise princes to avoid being 'neutral' in conflicts?",
+        answer: "Neutrality signals weakness and invites attack from both sides. Commit decisively to one ally — it builds trust and deters aggression.",
+        category: "Machiavelli – Alliances"
+      },
+
+      // === MODERN GEOPOLITICAL APPLICATIONS ===
+      {
+        question: "How is China applying Sun Tzu’s principles in the South China Sea?",
+        answer: "By building islands (changing the 'terrain'), using civilian fishing fleets as proxies (deception), and avoiding direct military confrontation — shaping the environment before any battle.",
+        category: "Geopolitics – China"
       },
       {
-        question: "How are trade wars and supply chain weaponization strategically framed?",
-        answer: "They apply Machiavelli’s control of resources, Sun Tzu’s logistics, and Unrestricted Warfare’s economic weaponization."
+        question: "What is 'supply chain weaponization' and how can you protect against it?",
+        answer: "When a country uses control over critical goods (chips, rare earths) as leverage.<br><strong>Your move:</strong> Map dependencies → build 2+ backup suppliers → invest in local alternatives.",
+        category: "Geopolitics – Trade"
       },
       {
-        question: "What marks the rise of techno-feudalism and tech sovereignty as strategic challenges?",
-        answer: "The emergence of new power loci among Big Tech, critical control of digital terrain, and regulatory battles as territory and allegiance struggles."
+        question: "How can social media be used as a strategic tool — ethically?",
+        answer: "Build trust through consistent, transparent messaging (Sun Tzu: win hearts). Use data to understand audience needs (know yourself). Avoid manipulation — it erodes long-term influence.",
+        category: "Geopolitics – Influence"
       },
       {
-        question: "What makes social media a modern strategic weapon?",
-        answer: "Its use for psychological manipulation, narrative control, and asymmetric information warfare, echoing Sun Tzu’s emphasis on deception."
+        question: "What is 'friend-shoring' and why is it rising in 2025?",
+        answer: "Moving production to politically aligned, trusted countries (e.g., Vietnam, Mexico). It reduces risk from trade wars and supply disruptions while preserving efficiency.",
+        category: "Geopolitics – Resilience"
+      },
+
+      // === AI & ETHICS ===
+      {
+        question: "How should leaders apply Machiavelli’s 'virtù' to AI development?",
+        answer: "Be bold and adaptive — but pair ambition with ethical guardrails. Don’t let 'fortuna' (a breakthrough) blind you to long-term societal costs.",
+        category: "AI Ethics"
       },
       {
-        question: "Name two emergent global trends susceptible to the ancestral strategy lens.",
-        answer: "1) African resource wars over rare earths and lithium; 2) AI as a new geopolitical terrain and competitive arms race."
+        question: "What is the 'AI Social Contract' and why does it matter?",
+        answer: "A clear agreement: AI serves human goals, respects privacy, and includes human oversight. Without it, we risk a 'digital Leviathan' — powerful but unaccountable.",
+        category: "AI Ethics"
       },
       {
-        question: "What key warning does Orwell’s 1984 provide when applied to social media weaponization?",
-        answer: "The risk of 'doublethink' and 'Newspeak'—manipulation of truth and perpetual psychological warfare for control."
+        question: "How can a startup use Aethelred-style thinking?",
+        answer: "1. Map your market like a battlefield (competitors, risks).<br>2. Use CAS to simulate 'what-if' scenarios.<br>3. Build ethical AI from day one — it’s a competitive advantage.",
+        category: "Innovation"
+      },
+
+      // === CAS & SYSTEMS THINKING ===
+      {
+        question: "What is a 'butterfly effect' in geopolitics?",
+        answer: "A small event (a tweet, a port closure) triggers a chain reaction (market panic, policy shift). CAS helps you see these links early.",
+        category: "Systems Thinking"
       },
       {
-        question: "What are the new priorities for defense spending according to this analysis?",
-        answer: "Investing in hybrid and unrestricted domains: cyber, information operations, resilience, and cross-domain rapid adaptation."
+        question: "How do you run a 30-second risk simulation?",
+        answer: "List 3–5 interconnected issues → draw links → ask: 'If one fails, what breaks next?' This is CAS in action — no software needed.",
+        category: "Systems Thinking"
+      },
+
+      // === HOBBES & GOVERNANCE ===
+      {
+        question: "What does Hobbes teach us about AI governance?",
+        answer: "Without rules, AI development becomes a 'war of all against all'. We need a shared 'social contract' — transparent, enforceable, and human-centered.",
+        category: "Governance"
       },
       {
-        question: "What vulnerabilities are highlighted for the EU space technology ecosystem?",
-        answer: "Dependency on rare earths, supply chain insecurity, and digital infrastructure exposure to sabotage and coercion."
+        question: "What is the danger of an 'AI Leviathan'?",
+        answer: "A single, all-powerful system that enforces order but crushes freedom. The antidote: distributed power, open-source models, and human veto rights.",
+        category: "Governance"
+      },
+
+      // === ACTIONABLE TAKEAWAYS ===
+      {
+        question: "Name one thing you can do *this week* to apply Aethelred’s wisdom.",
+        answer: "Pick one risk in your life/work → map it like a general would → write down 2 proactive steps and 1 preventive measure. Start small, win big.",
+        category: "Action"
       },
       {
-        question: "Why are nuclear and rare earth value chains politically manipulable?",
-        answer: "Monopoly control lets states use them as coercive levers; supply disruption is a tool of policy, not just economics."
-      },
-      {
-        question: "What caveat must be considered when forecasting based on historical strategy?",
-        answer: "Correlation is not causation; predictions are hypothetical, grounded in patterns—not deterministic certainties."
+        question: "What’s the ultimate goal of strategic thinking?",
+        answer: "Not to win every battle — but to create conditions where yourerne *don’t have to fight at all*. Peace through strength, wisdom, and preparation.",
+        category: "Philosophy"
       }
     ];
 
-    let current = 0, right = 0, wrong = 0;
+    let current = 0;
+    let seen = new Set();
+    let streak = 0;
+    let totalCards = flashcards.length;
+
+    function updateProgress() {
+      const progress = ((seen.size / totalCards) * 100).toFixed(0);
+      document.getElementById('progress-bar').style.width = progress + '%';
+      document.getElementById('mastery').textContent = progress + '%';
+      document.getElementById('total-seen').textContent = seen.size;
+    }
 
     function showFlashcard(idx) {
-      document.getElementById('question').textContent = flashcards[idx].question;
-      document.getElementById('answer').textContent = flashcards[idx].answer;
+      const card = flashcards[idx];
+      document.getElementById('question').textContent = card.question;
+      document.getElementById('answer').innerHTML = card.answer;
       document.getElementById('answer').style.display = 'none';
       document.getElementById('nextBtn').style.display = 'none';
-      document.getElementById('showBtn').style.display = 'inline';
-      document.getElementById('score').textContent = `Card ${idx + 1} of ${flashcards.length}`;
+      document.getElementById('showBtn').style.display = 'inline-block';
+      document.getElementById('card-num').textContent = idx + 1;
+      document.getElementById('total-cards').textContent = totalCards;
+      document.getElementById('category').textContent = card.category;
+
+      if (!seen.has(idx)) {
+        seen.add(idx);
+        streak++;
+      } else {
+        streak = 0;
+      }
+      document.getElementById('current-streak').textContent = streak;
+
+      updateProgress();
     }
 
     document.getElementById('showBtn').onclick = function () {
       document.getElementById('answer').style.display = 'block';
-      document.getElementById('showBtn').style.display = 'none';
-      document.getElementById('nextBtn').style.display = 'inline';
+      this.style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline-block';
     };
 
     document.getElementById('nextBtn').onclick = function () {
-      current = (current + 1) % flashcards.length;
+      current = (current + 1) % totalCards;
       showFlashcard(current);
     };
 
-    // Initial display
+    // Initialize
     showFlashcard(current);
   </script>
 </body>
